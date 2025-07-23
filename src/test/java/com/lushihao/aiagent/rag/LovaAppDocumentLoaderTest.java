@@ -12,13 +12,13 @@ import static org.junit.jupiter.api.Assertions.*;
  * create:   2025-07-22   16:38
  */
 @SpringBootTest
-class LovaAppDocumentLoaderTest {
+class LoveAppDocumentLoaderTest {
 
     @Resource
-    private LovaAppDocumentLoader lovaAppDocumentLoaderl;
+    private LoveAppDocumentLoader loveAppDocumentLoaderl;
 
     @Test
     void loadMarkdowns() {
-        lovaAppDocumentLoaderl.loadMarkdowns();
+        loveAppDocumentLoaderl.loadMarkdowns();
     }
 }

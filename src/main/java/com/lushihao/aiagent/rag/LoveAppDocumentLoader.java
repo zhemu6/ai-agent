@@ -21,12 +21,12 @@ import java.util.List;
  */
 @Component
 @Slf4j
-public class LovaAppDocumentLoader {
+public class LoveAppDocumentLoader {
 
     private final ResourcePatternResolver resourcePatternResolver;
 
     // 快速加载多个文档
-    LovaAppDocumentLoader(ResourcePatternResolver resourcePatternResolver) {
+    LoveAppDocumentLoader(ResourcePatternResolver resourcePatternResolver) {
         this.resourcePatternResolver = resourcePatternResolver;
     }
 

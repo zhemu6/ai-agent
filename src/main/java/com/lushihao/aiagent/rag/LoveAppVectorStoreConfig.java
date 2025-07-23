@@ -21,12 +21,12 @@ import java.util.List;
 public class LoveAppVectorStoreConfig {
 
     @Resource
-    private LovaAppDocumentLoader lovaAppDocumentLoader;
+    private LoveAppDocumentLoader loveAppDocumentLoader;
 
     @Bean
     VectorStore loveAppVectorStore(EmbeddingModel embeddingModel){
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel).build();
-        List<Document> documents = lovaAppDocumentLoader.loadMarkdowns();
+        List<Document> documents = loveAppDocumentLoader.loadMarkdowns();
         simpleVectorStore.add(documents);
         return simpleVectorStore;
     }

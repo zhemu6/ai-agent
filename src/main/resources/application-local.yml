@@ -7,3 +7,15 @@ spring:
       chat:
         options:
           model: qwen-plus
+    # 配置向量存储的相关设置
+    vectorstore:
+      pgvector:
+        index-type: HNSW
+        dimensions: 1536 # 向量维度
+        distance-type: COSINE_DISTANCE # 距离对比
+        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+  datasource:
+    url: jdbc:postgresql://rm-cn-0s64d0l6800022wo.rwlb.rds.aliyuncs.com:5432/hao_ai_agent
+    username: my_user
+    password: LSHly521
+
