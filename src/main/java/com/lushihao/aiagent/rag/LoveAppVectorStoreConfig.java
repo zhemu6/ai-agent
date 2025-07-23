@@ -27,7 +27,11 @@ public class LoveAppVectorStoreConfig {
     private MyTokenTextSplitter myTokenTextSplitter;
 
     @Resource
+    private MySummaryEnriching mySummaryEnriching;
+
+    @Resource
     private MyKeywordEnriching myKeywordEnriching;
+
     @Bean
     VectorStore loveAppVectorStore(EmbeddingModel embeddingModel){
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel).build();
@@ -35,7 +39,9 @@ public class LoveAppVectorStoreConfig {
         List<Document> documents = loveAppDocumentLoader.loadMarkdowns();
         // 自助切分文档
 //        List<Document> splitDocuments = myTokenTextSplitter.splitCustomized(documents);
-        List<Document> enrichingDocuments = myKeywordEnriching.enrichingDocuments(documents);
+        // 借助元数据增强器 补充关键词信息
+//        List<Document> enrichingDocuments = myKeywordEnriching.enrichingDocuments(documents);
+        List<Document> enrichingDocuments = mySummaryEnriching.enrichingDocuments(documents);
         // 使用增强器
         simpleVectorStore.add(enrichingDocuments);
         return simpleVectorStore;

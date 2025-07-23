@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * 通过调用AI 提取关键词并添加到元数据中
  * @author: lushihao
  * @version: 1.0
  * create:   2025-07-23   16:52
@@ -20,6 +21,7 @@ public class MyKeywordEnriching {
     private ChatModel dashscopeModel;
 
     public List<Document> enrichingDocuments(List<Document> documents) {
+        // 传递两个参数 一个是AI模型 一个是生成关键词的数量
         KeywordMetadataEnricher metadataEnricher = new KeywordMetadataEnricher(dashscopeModel, 5);
         return metadataEnricher.apply(documents);
     }

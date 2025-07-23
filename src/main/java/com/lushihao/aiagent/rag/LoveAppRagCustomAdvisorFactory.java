@@ -20,12 +20,10 @@ public class LoveAppRagCustomAdvisorFactory {
 
 
     public static Advisor createLoveAppRagCustomAdvisor(VectorStore vectorStore,String status){
-
-
         //构建一个过滤查询表达式 是状态和我们指定的状态相等
         Filter.Expression expression = new FilterExpressionBuilder().eq("status", status).build();
 
-        // 构建向量数据库
+        // 构建向量检索器
         DocumentRetriever documentRetriever = VectorStoreDocumentRetriever
                 .builder()
                 .vectorStore(vectorStore)
@@ -37,10 +35,12 @@ public class LoveAppRagCustomAdvisorFactory {
                 .topK(3)
                 .build();
 
-
+        // 构建一个RGA向量检索顾问
         return RetrievalAugmentationAdvisor
                 .builder()
+                // 使用向量检索器
                 .documentRetriever(documentRetriever)
+                // 对用户问题进行增强
                 .queryAugmenter(LoveAppContextualQueryAugmenterFactory.createInstance())
                 .build();
 

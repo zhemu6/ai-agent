@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryRewriter {
 
-
     private final QueryTransformer queryTransformer;
 
     public QueryRewriter(ChatModel dashscopeChatModel) {

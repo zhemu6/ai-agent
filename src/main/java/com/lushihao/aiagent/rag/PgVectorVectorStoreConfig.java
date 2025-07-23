@@ -15,6 +15,7 @@ import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgDistan
 import static org.springframework.ai.vectorstore.pgvector.PgVectorStore.PgIndexType.HNSW;
 
 /**
+ * 基于Pg数据库的向量存储实现
  * @author: lushihao
  * @version: 1.0
  * create:   2025-07-23   09:53
@@ -39,16 +40,18 @@ public class PgVectorVectorStoreConfig {
                 .distanceType(COSINE_DISTANCE)
                 // Optional: defaults to HNSW
                 .indexType(HNSW)
-                // Optional: defaults to false
+                // 是否在启动时自动创建向量表结构（true 表示自动建表）。
                 .initializeSchema(true)
-                // Optional: defaults to "public"
+                // 设置使用的数据库 schema 名称。
                 .schemaName("public")
-                // Optional: defaults to "vector_store"
+                // 设置存储向量数据的表名。
                 .vectorTableName("vector_store")
-                // Optional: defaults to 10000 最大批量插入文档数据
+                // 最大支持一次插入 10000 条文档数据，防止内存溢出。
                 .maxDocumentBatchSize(10000)
                 .build();
+        // 使用loveAppDocumentLoader加载md文档
         List<Document> documents  = loveAppDocumentLoader.loadMarkdowns();
+        // 将documents文档添加到向量存储中
         vectorStore.add(documents);
         return vectorStore;
     }
