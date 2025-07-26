@@ -1,47 +1,66 @@
 spring:
+  # 设置空数据库配置，阻止 DataSource 初始化
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerAutoConfiguration
   application:
     name: ai-agent
   ai:
     dashscope:
-      api-key: "sk-c37223707a7b47b1b7ff5ba6898b2767"
+      api-key: "sk-54f15e293fc7453284bca3850b81c2df"
+
       chat:
         options:
           model: qwen-plus
-    # 配置向量存储的相关设置
-    vectorstore:
-      pgvector:
-        index-type: HNSW
-        dimensions: 1536 # 向量维度
-        distance-type: COSINE_DISTANCE # 距离对比
-        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
-  datasource:
-    url: jdbc:postgresql://rm-cn-0s64d0l6800022wo.rwlb.rds.aliyuncs.com:5432/hao_ai_agent
-    username: my_user
-    password: LSHly521
-  mail:
-    host: smtp.qq.com
-    port: 465
-    username: 1137800445@qq.com
-    # 注意：这里需要使用QQ邮箱的授权码，不是QQ密码
-    # 获取方法：QQ邮箱 -> 设置 -> 账户 -> POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务 -> 开启POP3/SMTP -> 生成授权码
-    password: opgtkvxacpyrgbfj
-    protocol: smtp
-    default-encoding: UTF-8
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-          ssl:
-            enable: true
-          socketFactory:
-            class: javax.net.ssl.SSLSocketFactory
-            port: 465
-          connectiontimeout: 15000
-          timeout: 15000
-          writetimeout: 15000
-          debug: true
+    mcp:
+      client:
+        sse:
+          connections:
+            server1:
+              url: http://localhost:8127
+#        stdio:
+#          # 指定MCP服务器配置文件路径（推荐）
+#          servers-configuration: classpath:/mcp-servers-config.json
+
+
+
+  #    # 配置向量存储的相关设置
+  #    vectorstore:
+  #      pgvector:
+  #        index-type: HNSW
+  #        dimensions: 1536 # 向量维度
+  #        distance-type: COSINE_DISTANCE # 距离对比
+  #        max-document-batch-size: 10000 # Optional: Maximum number of documents per batch
+  # 数据库用于存储向量
+#  datasource:
+#    url: jdbc:postgresql://rm-cn-0s64d0l6800022wo.rwlb.rds.aliyuncs.com:5432/hao_ai_agent
+#    username: my_user
+#    password: LSHly521
+#  mail:
+#    host: smtp.qq.com
+#    port: 465
+#    username: 1137800445@qq.com
+#    # 注意：这里需要使用QQ邮箱的授权码，不是QQ密码
+#    # 获取方法：QQ邮箱 -> 设置 -> 账户 -> POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务 -> 开启POP3/SMTP -> 生成授权码
+#    password: opgtkvxacpyrgbfj
+#    protocol: smtp
+#    default-encoding: UTF-8
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#          ssl:
+#            enable: true
+#          socketFactory:
+#            class: javax.net.ssl.SSLSocketFactory
+#            port: 465
+#          connectiontimeout: 15000
+#          timeout: 15000
+#          writetimeout: 15000
+#          debug: true
 
 
 # searchAPI

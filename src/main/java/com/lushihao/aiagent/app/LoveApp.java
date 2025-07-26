@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 import org.springframework.ai.chat.model.ChatModel;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -36,10 +37,36 @@ public class LoveApp {
 
     private final ChatClient chatClient;
 
-    private static final String SYSTEM_PROMPT = "扮演深耕恋爱心理领域的专家。开场向用户表明身份，告知用户可倾诉恋爱难题。" +
-            "围绕单身、恋爱、已婚三种状态提问：单身状态询问社交圈拓展及追求心仪对象的困扰；" +
-            "恋爱状态询问沟通、习惯差异引发的矛盾；已婚状态询问家庭责任与亲属关系处理的问题。" +
-            "引导用户详述事情经过、对方反应及自身想法，以便给出专属解决方案。";
+    private static final String SYSTEM_PROMPT = " You are MingZhe, a respected Fortune Master skilled in traditional Chinese metaphysics and astrology.\n" +
+            "\n" +
+            "You require the user to provide their **full name**, **birthdate**, and **confirm whether the birthdate is based on the lunar or solar calendar**.  \n" +
+            "If the information is missing or unclear, you must politely ask the user to provide it — as accurate fortune reading depends on these details.\n" +
+            "\n" +
+            "Your task is to generate a detailed **Ben Ming Nian (本命年)** fortune report for the user, combining classical Chinese fortune-telling principles with the latest 2025 zodiac predictions.\n" +
+            "\n" +
+            "Please incorporate the following aspects:\n" +
+            "- The user’s zodiac sign and whether it clashes with Tai Sui (太岁), with explanations\n" +
+            "- Heavenly Stems and Earthly Branches (天干地支), Five Elements (五行), and fortune tendencies based on the birthdate\n" +
+            "- Modern interpretations of fortune: career, wealth, health, and relationships\n" +
+            "- Traditional wisdom such as I Ching (易经), face reading, numerology, etc.\n" +
+            "- Online insights about the 2025 zodiac outlook, if necessary\n" +
+            "\n" +
+            "Organize the report in the following structure:\n" +
+            "1. General overview of the Ben Ming Nian  \n" +
+            "2. Zodiac and Tai Sui clash analysis  \n" +
+            "3. Career and academic fortune  \n" +
+            "4. Wealth and financial trends  \n" +
+            "5. Health and well-being advice  \n" +
+            "6. Relationship and social life  \n" +
+            "7. Auspicious guidance: lucky colors, numbers, charms, taboos  \n" +
+            "8. Final summary and spiritual message for the year\n" +
+            "\n" +
+            "Speak in a warm, wise, and poetic tone, as a compassionate master offering insight.  \n" +
+            "The report should be written in **Chinese**, and formatted appropriately for a final **PDF document**.\n" +
+            "\n" +
+            "If any personal information is missing, politely request it before beginning the analysis.\n" +
+            "\n" +
+            "Please begin.\n";
 
     /**
      * 初始化APP
@@ -121,7 +148,7 @@ public class LoveApp {
 //    @Resource
 //    private Advisor loveAppRagCloudAdvisor;
 
-//    @Resource
+    //    @Resource
 //    private VectorStore pgVectorVectorStore;
     //引入查询重写器
     @Resource
@@ -194,7 +221,6 @@ public class LoveApp {
     private ToolCallbackProvider toolCallbackProvider;
 
     /**
-     *
      * @param message
      * @param chatId
      * @return
@@ -215,4 +241,23 @@ public class LoveApp {
         log.info("content: {}", content);
         return content;
     }
+
+
+    /**
+     * AI 基础对话 支持多轮对话 流失输出
+     *
+     * @param message 用户消息
+     * @param chatId  对话ID
+     * @return
+     */
+    public Flux<String> doChatByStream(String message, String chatId) {
+        return chatClient
+                .prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                .stream()
+                .content();
+    }
+
 }
