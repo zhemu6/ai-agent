@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * create:   2025-07-09   10:34
  */
 @Slf4j
-//@SpringBootTest
+@SpringBootTest
 class LoveAppTest {
 
     @Resource
@@ -96,6 +96,17 @@ class LoveAppTest {
         String chatId = UUID.randomUUID().toString();
         String answer = loveApp.doChatWithTools(message, chatId);
         Assertions.assertNotNull(answer);
+    }
+
+
+    @Test
+    void doChatWithMCP() {
+        String chatId = UUID.randomUUID().toString();
+//        String message  =  "我的另一半住在上海静安区，请你帮我找到五公里内合适的约会地点";
+        String message  =  "帮我搜索一些图片,图片的内容是:“一台电脑放在桌子上";
+        String answer = loveApp.doChatWithMCP(message, chatId);
+        Assertions.assertNotNull(answer);
+
     }
 
 

@@ -29,3 +29,11 @@ knife4j:
 #logging:
 #  level:
 #    org.springframework.ai: DEBUG
+
+          # 直接配置示例，和上边的配制二选一
+          # connections:
+          #   server1:
+          #     command: java
+          #     args:
+          #       - -jar
+          #       - /path/to/your/mcp-server.jar

@@ -19,7 +19,7 @@ public class ToolRegistration {
     @Value("${search-api.api-key}")
     private String searchApiKey;
 
-    private JavaMailSender javaMailSender;
+//    private JavaMailSender javaMailSender;
 
     @Bean
     public ToolCallback[] allTools() {
@@ -29,15 +29,15 @@ public class ToolRegistration {
         ResourceDownloadTool resourceDownloadTool = new ResourceDownloadTool();
         TerminalOperationTool terminalOperationTool = new TerminalOperationTool();
         PDFGenerationTool pdfGenerationTool = new PDFGenerationTool();
-        SendMailTool sendMailTool = new SendMailTool(javaMailSender);
+//        SendMailTool sendMailTool = new SendMailTool(javaMailSender);
         return ToolCallbacks.from(
                 fileOperationTool,
                 webSearchTool,
                 webScrapingTool,
                 resourceDownloadTool,
                 terminalOperationTool,
-                pdfGenerationTool,
-                sendMailTool
+                pdfGenerationTool
+//                sendMailTool
         );
     }
 }

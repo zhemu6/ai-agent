@@ -18,6 +18,7 @@ import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.tool.ToolCallback;
+import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -98,6 +99,7 @@ public class LoveApp {
      * @return
      */
     public LoveReport doChatWithReport(String message, String chatId) {
+        // 调用chatClient的prompt方法，设置系统提示，用户消息，以及对话ID和对话大小
         LoveReport loveReport = chatClient
                 .prompt()
                 .system(SYSTEM_PROMPT + "每次对话后都生成恋爱结果，标题为{用户名}的恋爱报告，内容为建议列表")
@@ -106,19 +108,21 @@ public class LoveApp {
                         .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
                 .call()
                 .entity(LoveReport.class);
+        // 打印恋爱报告
         log.info("loveReport: {}", loveReport);
         return loveReport;
     }
 
     // AI恋爱大师知识库问答功能
+    // 基于内存的向量数据库存储
     @Resource
     private VectorStore loveAppVectorStore;
 
-    @Resource
-    private Advisor loveAppRagCloudAdvisor;
+//    @Resource
+//    private Advisor loveAppRagCloudAdvisor;
 
-    @Resource
-    private VectorStore pgVectorVectorStore;
+//    @Resource
+//    private VectorStore pgVectorVectorStore;
     //引入查询重写器
     @Resource
     private QueryRewriter queryRewriter;
@@ -161,8 +165,8 @@ public class LoveApp {
         return content;
     }
 
-    @Autowired
-    private JavaMailSender mailSender;
+//    @Autowired
+//    private JavaMailSender mailSender;
 
     // AI调用工具能力
     @Resource
@@ -177,6 +181,34 @@ public class LoveApp {
                 // 开启日志 便于观察效果
                 .advisors(new MyLoggerAdvisor())
                 .tools(allTools)
+                .call()
+                .chatResponse();
+        String content = chatResponse.getResult().getOutput().getText();
+        log.info("content: {}", content);
+        return content;
+    }
+
+    // AI调用MCP服务
+    // 从配置文件中读取并返回可以调用的工具
+    @Resource
+    private ToolCallbackProvider toolCallbackProvider;
+
+    /**
+     *
+     * @param message
+     * @param chatId
+     * @return
+     */
+    public String doChatWithMCP(String message, String chatId) {
+        ChatResponse chatResponse = chatClient
+                .prompt()
+                .user(message)
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, chatId)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 10))
+                // 开启日志 便于观察效果
+                .advisors(new MyLoggerAdvisor())
+                // 使用MCP服务
+                .tools(toolCallbackProvider)
                 .call()
                 .chatResponse();
         String content = chatResponse.getResult().getOutput().getText();
